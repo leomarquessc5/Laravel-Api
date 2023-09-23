@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUpdateUserRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
@@ -18,7 +20,7 @@ class UserController extends Controller
     {
         $users = $this->user->paginate();
 
-        return $users;
+        return response([ 'users' => new UserResource($users), 'message' => 'Retrieved successfully'], 200);
     }
 
     /**
@@ -30,7 +32,7 @@ class UserController extends Controller
         $data['password'] = bcrypt($request->password);
 
         $userCreated = $this->user->create($data);
-        return $userCreated;
+        return response(['user' => new UserResource($userCreated), 'message' => 'Created successfully'], 201);
     }
 
     /**
@@ -38,7 +40,9 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = $this->user->findOrFail($id);
+
+        return response([ 'user' => new UserResource($user), 'message' => 'Retrieved successfully'], 200);
     }
 
     /**
@@ -46,7 +50,14 @@ class UserController extends Controller
      */
     public function update(StoreUpdateUserRequest $request, string $id)
     {
-        //
+        $user = $this->user->findOrFail($id);
+        $data = $request->validated();
+
+        if ($request->password) $data['password'] = bcrypt($request->password);
+
+        $user->update($data);
+
+        return response([ 'user' => new UserResource($user), 'message' => 'Updated successfully'], 200);
     }
 
     /**
@@ -54,6 +65,9 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = $this->user->findOrFail($id);
+        $user->delete();
+
+        return response(['message' => 'Deleted'], Response::HTTP_NO_CONTENT);
     }
 }

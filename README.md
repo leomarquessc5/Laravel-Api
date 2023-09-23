@@ -22,7 +22,7 @@ docker compose exec app composer install
 docker compose exec app php artisan key:generate
 ```
 
-### Rodando Migrations
+### Running Migrations
 
 ```
 docker compose exec app php artisan migrate:fresh --seed
@@ -47,3 +47,11 @@ port: 5432
 user: postgres
 password: admin
 ```
+
+### Running Tests
+
+```
+docker compose exec app php artisan test --coverage
+```
+
+UserController -> 100%
