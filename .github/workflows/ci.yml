@@ -35,5 +35,8 @@ jobs:
           cp .env.ci .env
           php artisan key:generate
 
-      - name: Run Test suite
-        run: php artisan test
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        env:
+          XDEBUG_MODE: "${SAIL_XDEBUG_MODE:-off}"
+          XDEBUG_CONFIG: "${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}"
+        run: php artisan test --coverage
