@@ -5,6 +5,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::apiResource('users', UserController::class);
 
-// Route::get('/', function () {
-//     return response('Success', 200);
-// });
+Route::get('/', function () {
+    return response('Success', 200);
+});
