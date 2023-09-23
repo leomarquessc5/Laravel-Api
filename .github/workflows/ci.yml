@@ -6,25 +6,26 @@ on:
       - develop
 
 jobs:
-  tests:
+  phpunit:
     runs-on: ubuntu-latest
+    container:
+      image: kirschbaumdevelopment/laravel-test-runner:7.3
+
+    services:
+      postgres:
+        image: postgres:10.8
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
         with:
           fetch-depth: 1
-
-      - name: Cache composer dependencies
-        uses: actions/cache@v2
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            composer-
-
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.1
 
       - name: Install composer dependencies
         run: |
